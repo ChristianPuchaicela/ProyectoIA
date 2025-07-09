@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Paciente - MenteSana</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <h2>🧠 MenteSana</h2>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="#" id="logoutBtn">Cerrar Sesión</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <div class="dashboard-header">
+            <h1>Bienvenido, <span id="patientName">Paciente</span> 👋</h1>
+            <p>Aquí puedes gestionar tu bienestar emocional</p>
+        </div>
+
+        <div class="dashboard-grid">
+            <div class="dashboard-card">
+                <h3>📅 Mi Agenda</h3>
+                <div class="appointment-list">
+                    <div class="appointment-item">
+                        <strong>Próxima cita:</strong> 15 de Julio, 2025 - 10:00 AM<br>
+                        <small>Dr. María González - Terapia Individual</small>
+                    </div>
+                    <div class="appointment-item">
+                        <strong>Cita programada:</strong> 22 de Julio, 2025 - 2:00 PM<br>
+                        <small>Dr. Carlos Mendoza - Seguimiento</small>
+                    </div>
+                </div>
+                <button class="btn btn-secondary">Agendar Nueva Cita</button>
+            </div>
+
+            <div class="dashboard-card">
+                <h3>📝 Diario Emocional</h3>
+                <textarea id="emotionalDiary" placeholder="¿Cómo te sientes hoy? Escribe tus pensamientos y emociones..."></textarea>
+                <button class="btn btn-primary" onclick="saveEntry()">Guardar Entrada</button>
+            </div>
+
+            <div class="dashboard-card">
+                <h3>📊 Análisis Emocional</h3>
+                <div class="emotion-stats">
+                    <div class="emotion-item">
+                        <span class="emotion-label">Alegría:</span>
+                        <div class="emotion-bar">
+                            <div class="emotion-progress" style="width: 75%"></div>
+                        </div>
+                        <span>75%</span>
+                    </div>
+                    <div class="emotion-item">
+                        <span class="emotion-label">Calma:</span>
+                        <div class="emotion-bar">
+                            <div class="emotion-progress" style="width: 60%"></div>
+                        </div>
+                        <span>60%</span>
+                    </div>
+                    <div class="emotion-item">
+                        <span class="emotion-label">Energía:</span>
+                        <div class="emotion-bar">
+                            <div class="emotion-progress" style="width: 45%"></div>
+                        </div>
+                        <span>45%</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard-card">
+                <h3>🎯 Objetivos de Bienestar</h3>
+                <div class="goals-list">
+                    <div class="goal-item">
+                        <input type="checkbox" checked> Meditar 10 minutos diarios
+                    </div>
+                    <div class="goal-item">
+                        <input type="checkbox"> Escribir en diario emocional
+                    </div>
+                    <div class="goal-item">
+                        <input type="checkbox"> Ejercicio 30 minutos
+                    </div>
+                </div>
+                <button class="btn btn-secondary">Agregar Objetivo</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/script.js"></script>
+</body>
+</html>

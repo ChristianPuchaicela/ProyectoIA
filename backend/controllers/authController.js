@@ -4,9 +4,7 @@ const { sql, poolPromise } = require('../config/db');
 require('dotenv').config();
 
 exports.register = async (req, res) => {
-  const { nombre, email, password, rol } = req.body;
-
-  console.log("📥 Datos recibidos:", req.body);
+  const { nombre, email, password } = req.body;
 
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -16,17 +14,20 @@ exports.register = async (req, res) => {
       .input('nombre', sql.VarChar, nombre)
       .input('correo', sql.VarChar, email)
       .input('contraseña', sql.VarChar, hashedPassword)
-      .input('tipoUsuario', sql.VarChar, rol)
+      .input('tipoUsuario', sql.VarChar, 'paciente') // fijo como paciente
       .query(`INSERT INTO Usuarios (nombre, correo, contraseña, tipoUsuario, fechaRegistro)
               VALUES (@nombre, @correo, @contraseña, @tipoUsuario, GETDATE())`);
 
     res.status(201).json({ mensaje: 'Usuario registrado exitosamente' });
   } catch (err) {
     console.error("❌ Error al registrar usuario:", err);
-    res.status(500).json({ error: err.message });
+    if (err.message.includes("UNIQUE")) {
+      res.status(400).json({ error: "Ya existe un usuario con ese correo" });
+    } else {
+      res.status(500).json({ error: err.message });
+    }
   }
 };
-
 
 exports.login = async (req, res) => {
   const { email, password } = req.body;

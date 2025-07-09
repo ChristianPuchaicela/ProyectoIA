@@ -1,11 +1,54 @@
 const express = require('express');
+const { sql, poolPromise } = require('../config/db');
+const bcrypt = require('bcryptjs');
+
 const router = express.Router();
-const authController = require('../controllers/authController');
 
-// Ruta para registro de usuarios (paciente o psicólogo)
-router.post('/register', authController.register);
+// Registro de paciente
+router.post('/registro', async (req, res) => {
+  const { nombre, correo, contrasena } = req.body;
 
-// Ruta para login
-router.post('/login', authController.login);
+  try {
+    const pool = await poolPromise;
+    const hashed = await bcrypt.hash(contrasena, 10);
+
+    await pool.request().query(`
+      INSERT INTO Usuarios (nombre, correo, contraseña, tipoUsuario)
+      VALUES ('${nombre}', '${correo}', '${hashed}', 'paciente')
+    `);
+
+    res.status(200).json({ msg: 'Registro exitoso' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Login
+router.post('/login', async (req, res) => {
+  const { correo, contrasena } = req.body;
+
+  try {
+    const pool = await poolPromise;
+    const result = await pool.request().query(`
+      SELECT * FROM Usuarios WHERE correo = '${correo}'
+    `);
+
+    const user = result.recordset[0];
+
+    if (!user) return res.status(404).json({ error: 'Usuario no encontrado' });
+
+    const valid = await bcrypt.compare(contrasena, user.contraseña || user["contrase�a"]);
+
+    if (!valid) return res.status(401).json({ error: 'Contraseña incorrecta' });
+
+    res.json({
+      idUsuario: user.idUsuario,
+      nombre: user.nombre,
+      tipoUsuario: user.tipoUsuario
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
 module.exports = router;
