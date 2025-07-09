@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const idPsicologo = selectPsicologo.value;
             const fechaCita = document.getElementById('fechaCita').value;
             const motivo = document.getElementById('motivo').value;
-            const token = user?.token;
+            const token = localStorage.getItem('token'); // Usar el token real
             if (!idPaciente) {
                 alert('Debes iniciar sesión como paciente.');
                 return;
@@ -79,9 +79,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 .then(res => res.json())
                 .then(citas => {
                     listaCitasPaciente.innerHTML = '';
-                    citas.forEach(cita => {
+                    if (citas.length === 0) {
+                        listaCitasPaciente.innerHTML = '<li>No tienes citas programadas.</li>';
+                        return;
+                    }
+                    citas.forEach((cita, idx) => {
                         const li = document.createElement('li');
-                        li.textContent = `${cita.fechaCita} - Psicólogo: ${cita.psicologo} - Motivo: ${cita.motivo || ''} - Estado: ${cita.estado}`;
+                        li.className = 'appointment-item';
+                        li.innerHTML = `
+                            <strong>${idx === 0 ? 'Próxima cita:' : 'Cita programada:'}</strong> ${new Date(cita.fechaCita).toLocaleString('es-ES', { dateStyle: 'long', timeStyle: 'short' })}<br>
+                            <small>Dr. ${cita.psicologo} - ${cita.motivo || ''}</small>
+                        `;
                         listaCitasPaciente.appendChild(li);
                     });
                 });
