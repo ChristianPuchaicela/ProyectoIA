@@ -51,7 +51,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 const data = await res.json();
                 if (res.ok) {
                     // Guardar datos en localStorage o redirigir según tipoUsuario
-                    localStorage.setItem('user', JSON.stringify(data));
+                    localStorage.setItem('user', JSON.stringify({
+                        token: data.token,
+                        idUsuario: data.idUsuario,
+                        tipoUsuario: data.tipoUsuario,
+                        nombre: data.nombre
+                    }));
                     if (data.tipoUsuario === 'psicologo') {
                         window.location.href = 'dashboard_psicologo.html';
                     } else {

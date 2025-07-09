@@ -1,6 +1,7 @@
 const express = require('express');
 const { sql, poolPromise } = require('../config/db');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 const router = express.Router();
 
@@ -37,11 +38,19 @@ router.post('/login', async (req, res) => {
 
     if (!user) return res.status(404).json({ error: 'Usuario no encontrado' });
 
-    const valid = await bcrypt.compare(contrasena, user.contraseña || user["contrase�a"]);
+    const valid = await bcrypt.compare(contrasena, user.contraseña || user["contraseña"]);
 
     if (!valid) return res.status(401).json({ error: 'Contraseña incorrecta' });
 
+    // Generar token JWT
+    const token = jwt.sign(
+      { idUsuario: user.idUsuario, tipoUsuario: user.tipoUsuario },
+      process.env.JWT_SECRET,
+      { expiresIn: '1d' }
+    );
+
     res.json({
+      token,
       idUsuario: user.idUsuario,
       nombre: user.nombre,
       tipoUsuario: user.tipoUsuario

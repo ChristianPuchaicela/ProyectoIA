@@ -11,7 +11,7 @@
     <nav class="navbar">
         <div class="nav-container">
             <div class="nav-logo">
-                <h2>🧠 MenteSana</h2>
+                <h2>🧠 PsicologIA</h2>
             </div>
             <ul class="nav-menu">
                 <li><a href="index.html">Inicio</a></li>
@@ -90,9 +90,34 @@
                 </div>
                 <button class="btn btn-secondary">Agregar Objetivo</button>
             </div>
+
+            <div class="dashboard-card">
+                <h3>📅 Agendar Nueva Cita</h3>
+                <form id="formCita">
+                    <div class="form-group">
+                        <label for="selectPsicologo">Psicólogo</label>
+                        <select id="selectPsicologo" required></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="fechaCita">Fecha y Hora</label>
+                        <input type="datetime-local" id="fechaCita" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="motivo">Motivo</label>
+                        <input type="text" id="motivo" maxlength="255" placeholder="Motivo de la cita">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Agendar</button>
+                </form>
+            </div>
+            <div class="dashboard-card">
+                <h3>📅 Mis Citas</h3>
+                <ul id="listaCitasPaciente"></ul>
+            </div>
         </div>
     </div>
 
     <script src="js/script.js"></script>
+    <script src="js/logout.js"></script>
+    <script src="js/citas.js"></script>
 </body>
 </html>
