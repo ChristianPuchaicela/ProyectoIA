@@ -65,3 +65,23 @@ exports.obtenerCitasPaciente = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+// Obtener pacientes de un psicólogo autenticado
+exports.obtenerPacientesDePsicologo = async (req, res) => {
+  const idPsicologo = req.user.idUsuario;
+  try {
+    const pool = await poolPromise;
+    const result = await pool.request()
+      .input('idPsicologo', sql.Int, idPsicologo)
+      .query(`
+        SELECT DISTINCT u.idUsuario, u.nombre, u.correo
+        FROM Citas c
+        JOIN Usuarios u ON c.idPaciente = u.idUsuario
+        WHERE c.idPsicologo = @idPsicologo
+      `);
+    res.json(result.recordset);
+  } catch (err) {
+    console.error('Error en obtenerPacientesDePsicologo:', err); // Log detallado
+    res.status(500).json({ error: err.message });
+  }
+};

@@ -46,12 +46,17 @@ exports.login = async (req, res) => {
     if (!match) return res.status(401).json({ error: 'Contraseña incorrecta' });
 
     const token = jwt.sign(
-      { id: user.idUsuario, rol: user.tipoUsuario },
+      { idUsuario: user.idUsuario, tipoUsuario: user.tipoUsuario },
       process.env.JWT_SECRET,
       { expiresIn: '1d' }
     );
 
-    res.json({ token, rol: user.tipoUsuario });
+    res.json({
+      token,
+      idUsuario: user.idUsuario,
+      tipoUsuario: user.tipoUsuario,
+      nombre: user.nombre
+    });
   } catch (err) {
     console.error('❌ Error en login:', err);
     res.status(500).json({ error: err.message });

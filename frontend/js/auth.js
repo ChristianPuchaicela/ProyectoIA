@@ -50,9 +50,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
                 const data = await res.json();
                 if (res.ok) {
-                    // Guardar datos en localStorage o redirigir según tipoUsuario
+                    // Guardar token y datos de usuario por separado
+                    localStorage.setItem('token', data.token);
                     localStorage.setItem('user', JSON.stringify({
-                        token: data.token,
                         idUsuario: data.idUsuario,
                         tipoUsuario: data.tipoUsuario,
                         nombre: data.nombre
