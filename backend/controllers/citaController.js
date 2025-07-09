@@ -85,3 +85,20 @@ exports.obtenerPacientesDePsicologo = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+// Cambiar el estado de una cita
+exports.cambiarEstadoCita = async (req, res) => {
+  const { idCita } = req.params;
+  const { estado } = req.body;
+  try {
+    const pool = await poolPromise;
+    await pool.request()
+      .input('idCita', sql.Int, idCita)
+      .input('estado', sql.VarChar, estado)
+      .query('UPDATE Citas SET estado = @estado WHERE idCita = @idCita');
+    res.json({ mensaje: 'Estado de la cita actualizado' });
+  } catch (err) {
+    console.error('Error en cambiarEstadoCita:', err); // Log detallado
+    res.status(500).json({ error: err.message });
+  }
+};

@@ -61,10 +61,48 @@ document.addEventListener('DOMContentLoaded', () => {
                 .then(res => res.json())
                 .then(citas => {
                     listaCitasPsicologo.innerHTML = '';
-                    citas.forEach(cita => {
+                    // Solo mostrar citas con estado pendiente
+                    citas.filter(cita => cita.estado === 'pendiente').forEach(cita => {
                         const li = document.createElement('li');
-                        li.textContent = `${cita.fechaCita} - Paciente: ${cita.paciente} - Motivo: ${cita.motivo || ''} - Estado: ${cita.estado}`;
+                        li.innerHTML = `
+                            ${cita.fechaCita} - Paciente: ${cita.paciente} - Motivo: ${cita.motivo || ''} - Estado: 
+                            <select class="select-estado-cita">
+                                <option value="pendiente" ${cita.estado === 'pendiente' ? 'selected' : ''}>Pendiente</option>
+                                <option value="completada" ${cita.estado === 'completada' ? 'selected' : ''}>Completada</option>
+                                <option value="cancelada" ${cita.estado === 'cancelada' ? 'selected' : ''}>Cancelada</option>
+                            </select>
+                            <button class="btn btn-small btn-guardar-estado">Guardar</button>
+                        `;
+                        li.dataset.idCita = cita.idCita;
                         listaCitasPsicologo.appendChild(li);
+                    });
+
+                    // Evento para guardar estado
+                    listaCitasPsicologo.querySelectorAll('.btn-guardar-estado').forEach(btn => {
+                        btn.addEventListener('click', async function() {
+                            const li = this.closest('li');
+                            const idCita = li.dataset.idCita;
+                            const select = li.querySelector('.select-estado-cita');
+                            const nuevoEstado = select.value;
+                            const token = localStorage.getItem('token');
+                            const res = await fetch(`/api/citas/estado/${idCita}` , {
+                                method: 'PATCH',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'Authorization': token
+                                },
+                                body: JSON.stringify({ estado: nuevoEstado })
+                            });
+                            if (res.ok) {
+                                // Quitar la cita de la lista si ya no es pendiente
+                                if (nuevoEstado !== 'pendiente') {
+                                    li.remove();
+                                }
+                                alert('Estado actualizado');
+                            } else {
+                                alert('Error al actualizar estado');
+                            }
+                        });
                     });
                 });
         }
@@ -79,11 +117,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 .then(res => res.json())
                 .then(citas => {
                     listaCitasPaciente.innerHTML = '';
-                    if (citas.length === 0) {
+                    // Solo mostrar citas pendientes
+                    const citasPendientes = citas.filter(cita => cita.estado === 'pendiente');
+                    if (citasPendientes.length === 0) {
                         listaCitasPaciente.innerHTML = '<li>No tienes citas programadas.</li>';
                         return;
                     }
-                    citas.forEach((cita, idx) => {
+                    citasPendientes.forEach((cita, idx) => {
                         const li = document.createElement('li');
                         li.className = 'appointment-item';
                         li.innerHTML = `
